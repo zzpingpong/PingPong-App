@@ -8,7 +8,16 @@ import io
 
 # --- 页面与中文字体配置 ---
 st.set_page_config(page_title="乒乓球发球智能评估系统", layout="wide")
-plt.rcParams['font.sans-serif'] = ['SimHei', 'Microsoft YaHei', 'Arial Unicode MS'] # 兼容 Windows 中文
+import os
+from matplotlib import font_manager
+
+# 动态加载当前目录下的中文字体文件
+font_path = "simhei.ttf"
+if os.path.exists(font_path):
+    font_manager.fontManager.addfont(font_path)
+    plt.rcParams['font.family'] = font_manager.FontProperties(fname=font_path).get_name()
+else:
+    plt.rcParams['font.sans-serif'] = ['SimHei', 'Microsoft YaHei']
 plt.rcParams['axes.unicode_minus'] = False
 
 st.title("🏓 乒乓球发球智能评估系统 (完整商业版)")
