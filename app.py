@@ -33,9 +33,9 @@ with col1:
     
     col_a, col_b = st.columns(2)
     with col_a:
-        angle = st.number_input("实测抛球角度 (°)", min_value=0.0, step=0.01, value=4.32)
+        angle = st.number_input("实测抛球角度 (°)", min_value=0.0, step=0.01, value=None, placeholder="请看图输入")
     with col_b:
-        height = st.number_input("实测抛球高度 (cm)", min_value=0.0, step=0.01, value=68.44)
+        height = st.number_input("实测抛球高度 (cm)", min_value=0.0, step=0.01, value=None, placeholder="请看图输入")
 
 with col2:
     st.subheader("2. 鹰眼 Excel 数据源录入")
@@ -141,9 +141,12 @@ def generate_pdf_report(name, angle, height, df_data, img_file):
     return pdf_buffer
 
 # --- 按钮与执行区 ---
+# --- 按钮与执行区 ---
 if st.button("🚀 智能分析並生成 PDF 報告", use_container_width=True):
     if not var_img or df is None:
         st.warning("⚠️ 報告生成失敗：請確保【VAR 截圖】與【Excel 數據表】均已上傳！")
+    elif angle is None or height is None:
+        st.error("🚨 嚴重警告：請務必看圖手動輸入該隊員真實的【拋球角度】與【拋球高度】，否則無法生成報告！")
     else:
         with st.spinner("系統正在進行運動學運算與報告排版，請稍候..."):
             pdf_data = generate_pdf_report(player_name, angle, height, df, var_img)
