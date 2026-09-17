@@ -51,18 +51,23 @@ st.divider()
 
 # --- 第二部分：核心计算与报告生成引擎 ---
 def generate_pdf_report(name, angle, height, df_data, img_file):
-    # 1. 数据计算
+  # 1. 严格的数据清洗与计算 (绝对剔除 Excel 幽灵空行)
+    # 核心防线：只要“是否上台”或“速度”这列是空的，直接彻底删除该行，绝不计入总数
+    df_data = df_data.dropna(subset=['是否上台', '速度'])
+    
     avg_speed = df_data['速度'].mean()
     avg_spin = df_data['转速'].mean()
     avg_height = df_data['过网高度'].mean()
     avg_quality = df_data['旋转质量'].mean()
     
-    total_serves = len(df_data)
-    # 统计“是”的数量，计算上台率
+    total_serves = len(df_data) # 此时的长度绝对等于真实的击球数
+    
+    # 统计“是”的数量，计算精准上台率
     on_table = df_data['是否上台'].astype(str).str.contains('是').sum()
     passed = df_data['是否达标'].astype(str).str.contains('是').sum()
-    on_table_rate = int((on_table / total_serves) * 100) if total_serves > 0 else 0
     
+    # 精确四舍五入到整数
+    on_table_rate = int(round((on_table / total_serves) * 100, 0)) if total_serves > 0 else 0
     # 2. 在内存中创建 PDF
     pdf_buffer = io.BytesIO()
     with PdfPages(pdf_buffer) as pdf:
