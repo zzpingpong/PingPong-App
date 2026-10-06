@@ -125,30 +125,31 @@ def generate_pdf_report(name, angle, height, df_data, img_file):
         for i, v in enumerate([total_serves, on_table, passed]):
             ax_bar.text(i, v + 0.5, str(v), ha='center', fontweight='bold')
 
-      # 智能总评话术
-    issues = []
-    if on_table_rate < 80:
-        issues.append("上台穩定性偏低，無謂失誤較多")
-    if avg_spin < 30:
-        issues.append("旋轉質量偏弱")
-    if avg_speed < 25:
-        issues.append("發球球速偏慢")
+     # 智能总评话术
+        issues = []
+        if on_table_rate < 80:
+            issues.append("上台穩定性偏低，無謂失誤較多")
+        if avg_spin < 30:
+            issues.append("旋轉質量偏弱")
+        if avg_speed < 25:
+            issues.append("發球球速偏慢")
+            
+        issue_text = "數據反映出的主要不足在於：" + "；".join(issues) + "。" if issues else ""
+
+        text2 = (
+            f"質量總評：\n"
+            f"該隊員本次測試上台率為 {on_table_rate}%，平均轉速 {avg_spin:.2f} r/s，平均速度 {avg_speed:.2f} km/h。\n"
+            f"{issue_text}"
+        )
+
+        # 1. 将总评文字写到第二页
+        fig2.text(0.1, 0.40, text2, ha='left', va='top', fontsize=12, linespacing=1.8)
+
+        # 2. 极其关键的一步：把画好雷达图和写好字的第二页，正式保存进 PDF！
+        pdf.savefig(fig2)
+        plt.close(fig2)
         
-    issue_text = "數據反映出的主要不足在於：" + "；".join(issues) + "。" if issues else ""
-
-    text2 = (
-        f"質量總評：\n"
-        f"該隊員本次測試上台率為 {on_table_rate}%，平均轉速 {avg_spin:.2f} r/s，平均速度 {avg_speed:.2f} km/h。\n"
-        f"{issue_text}"
-    )
-
-    # 1. 将总评文字写到第二页
-    fig2.text(0.1, 0.40, text2, ha='left', va='top', fontsize=12, linespacing=1.8)
-
-    # 2. 极其关键的一步：把画好雷达图和写好字的第二页，正式保存进 PDF！
-    pdf.savefig(fig2)
-    plt.close(fig2)
-    
+        return pdf_buffer
     return pdf_buffer
 
 # --- 按钮与执行区 ---
