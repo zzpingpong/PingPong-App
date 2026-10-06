@@ -141,9 +141,9 @@ def generate_pdf_report(name, angle, height, df_data, img_file):
         f"該隊員本次測試上台率為 {on_table_rate}%，平均轉速 {avg_spin:.2f} r/s，平均速度 {avg_speed:.2f} km/h。\n"
         f"{issue_text}"
     )
-        fig2.text(0.1, 0.40, text2, ha='left', va='top', fontsize=12, linespacing=1.8)
-        pdf.savefig(fig2)
-        plt.close(fig2)
+    fig2.text(0.1, 0.40, text2, ha='left', va='top', fontsize=12, linespacing=1.8)
+    pdf.savefig(fig2)
+    plt.close(fig2)
         
     return pdf_buffer
 
