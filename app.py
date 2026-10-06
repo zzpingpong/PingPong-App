@@ -125,15 +125,22 @@ def generate_pdf_report(name, angle, height, df_data, img_file):
         for i, v in enumerate([total_serves, on_table, passed]):
             ax_bar.text(i, v + 0.5, str(v), ha='center', fontweight='bold')
 
-        # 智能总评话术
-        text2 = (
-            f"質量總評：\n"
-            f"該隊員穩定性表現為上台率 {on_table_rate}%。從雷達圖數據可見，其平均轉速達到了 {avg_spin:.2f} r/s，\n"
-            f"平均速度為 {avg_speed:.2f} km/h。整體發球展現出了{'極佳的威脅性與穩定性' if on_table_rate >= 80 else '一定的起伏，仍需強化手感'}。\n\n"
-            f"訓練改進建議：\n"
-            f"1. {'固化動力鏈： 目前拋球角度與發力配合極佳，請將此動作形成深度肌肉記憶。' if angle <= 30 else '重構發力軸： 必須立刻停止斜拋借力，在垂直拋球的基礎上重新找尋擊球節奏。'}\n"
-            f"2. {'強化落點欺騙性： 建議在現有高質量基礎上，加入更多長短球與旋轉反差變化。' if on_table_rate >= 80 else '提升上台率： 暫時降低發力極限，優先保證過網弧線與第一落點的安全系數。'}"
-        )
+       # 智能总评话术
+    issues = []
+    if on_table_rate < 80:
+        issues.append("上台穩定性偏低，無謂失誤較多")
+    if avg_spin < 30:
+        issues.append("旋轉質量偏弱")
+    if avg_speed < 25:
+        issues.append("發球球速偏慢")
+        
+    issue_text = "數據反映出的主要不足在於：" + "；".join(issues) + "。" if issues else ""
+
+    text2 = (
+        f"質量總評：\n"
+        f"該隊員本次測試上台率為 {on_table_rate}%，平均轉速 {avg_spin:.2f} r/s，平均速度 {avg_speed:.2f} km/h。\n"
+        f"{issue_text}"
+    )
         fig2.text(0.1, 0.40, text2, ha='left', va='top', fontsize=12, linespacing=1.8)
         pdf.savefig(fig2)
         plt.close(fig2)
